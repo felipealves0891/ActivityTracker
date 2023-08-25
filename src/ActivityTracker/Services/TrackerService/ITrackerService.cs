@@ -1,4 +1,4 @@
-﻿using ActivityTracker.Models;
+﻿using ActivityTracker.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace ActivityTracker.Services.TrackerService
 {
     public interface ITrackerService
     {
-        Activity GetActivity();
+        IEnumerable<Activity> GetActivities();   
     }
 }

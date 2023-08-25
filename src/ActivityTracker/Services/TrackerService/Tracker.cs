@@ -1,39 +1,32 @@
-﻿using ActivityTracker.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ActivityTracker.Core.Models;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ActivityTracker.Services.TrackerService
 {
     public class Tracker : ITrackerService
     {
+        private IntPtr _handleForegroundWindow;
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern IntPtr GetForegroundWindow();
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern int GetWindowTextLength(IntPtr hWnd);
-
-        public Activity GetActivity()
+        public IEnumerable<Activity> GetActivities()
         {
-            var strTitle = string.Empty;
-            var handle = GetForegroundWindow();
+            var _handleForegroundWindow = GetForegroundWindow();
+            var processes = System.Diagnostics.Process.GetProcesses();
+            return processes.Where(process => process.MainWindowHandle != IntPtr.Zero)
+                            .Select(Create)
+                            .ToArray();
+        }
 
-            // Obtain the length of the text   
-            var intLength = GetWindowTextLength(handle) + 1;
-            var stringBuilder = new StringBuilder(intLength);
-            if (GetWindowText(handle, stringBuilder, intLength) > 0)
-            {
-                strTitle = stringBuilder.ToString();
-            }
-
-            return new Activity(strTitle);
+        private Activity Create(System.Diagnostics.Process process)
+        {
+            return new Activity(
+                process.MachineName, 
+                process.ProcessName, 
+                process.MainWindowTitle, 
+                process.StartTime, 
+                process.MainWindowHandle.Equals( _handleForegroundWindow));
         }
 
     }

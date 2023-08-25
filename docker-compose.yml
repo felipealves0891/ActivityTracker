@@ -1,0 +1,39 @@
+version: "3.2"
+
+services:
+
+  queue:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - 12001:5672
+      - 13001:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=myQueue
+      - RABBITMQ_DEFAULT_PASS=myQueue!123456
+
+  nosql:
+    image: mongo
+    restart: always
+    ports:
+      - 12002:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=myNosql
+      - MONGO_INITDB_ROOT_PASSWORD=myNosql!123456
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "12003:5432"
+    environment:
+      - POSTGRES_USER=myDb
+      - POSTGRES_PASSWORD=myDb!123456
+      - POSTGRES_DB=DB_ACTIVITY_TRACKER
+  
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '12004:6379'
+    command: redis-server --loglevel warning --requirepass myCache!123456

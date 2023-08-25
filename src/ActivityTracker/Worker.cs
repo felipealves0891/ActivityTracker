@@ -22,9 +22,9 @@ namespace ActivityTracker
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    var activity = _tracker.GetActivity();
+                    var activity = _tracker.GetActivities();
                     await _repository.SaveAsync(activity, stoppingToken);
-                    await Task.Delay(1000);
+                    await Task.Delay(100);
                 }
             }
             catch (Exception ex)

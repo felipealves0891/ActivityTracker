@@ -1,12 +1,7 @@
-﻿using ActivityTracker.Models;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ActivityTracker.Core.Models;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ActivityTracker.Services.ActivityRepository
 {
@@ -23,16 +18,16 @@ namespace ActivityTracker.Services.ActivityRepository
             _webSocket = new ClientWebSocket();
         }
 
-        public async Task SaveAsync(Activity activity, CancellationToken cancellationToken)
+        public async Task SaveAsync(IEnumerable<Activity> activities, CancellationToken cancellationToken)
         {
             if(_webSocket.State != WebSocketState.Open)
                 await ConnectAsync(cancellationToken);
 
-            var json = activity.ToString();
+            var json = JsonSerializer.Serialize(activities);
+            _logger.LogInformation(json);
+
             byte[] data = Encoding.UTF8.GetBytes(json);
             await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, cancellationToken);
-
-            _logger.LogInformation(json);
         }
 
         private async Task ConnectAsync(CancellationToken cancellationToken)
