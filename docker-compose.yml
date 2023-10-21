@@ -31,6 +31,15 @@ services:
       - POSTGRES_PASSWORD=myDb!123456
       - POSTGRES_DB=DB_ACTIVITY_TRACKER
   
+  admin_db:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "13002:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: email@admin.com.br
+      PGADMIN_DEFAULT_PASSWORD: admin
+  
   cache:
     image: redis:6.2-alpine
     restart: always

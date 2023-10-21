@@ -1,6 +1,6 @@
 using ActivityTracker.Core.Models;
 
-namespace ActivityTracker.Api.Services;
+namespace ActivityTracker.Api.Services.PublisherService;
 
 public interface IPublisher : IDisposable
 {

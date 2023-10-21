@@ -23,6 +23,9 @@ namespace ActivityTracker
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     var activity = _tracker.GetActivities();
+                    if (!activity.Any())
+                        continue;
+                        
                     await _repository.SaveAsync(activity, stoppingToken);
                     await Task.Delay(100);
                 }

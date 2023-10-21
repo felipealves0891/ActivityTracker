@@ -18,13 +18,12 @@ namespace ActivityTracker.Services.ActivityRepository
             _webSocket = new ClientWebSocket();
         }
 
-        public async Task SaveAsync(IEnumerable<Activity> activities, CancellationToken cancellationToken)
+        public async Task SaveAsync(IEnumerable<ProcessEntity> activities, CancellationToken cancellationToken)
         {
             if(_webSocket.State != WebSocketState.Open)
                 await ConnectAsync(cancellationToken);
 
             var json = JsonSerializer.Serialize(activities);
-            _logger.LogInformation(json);
 
             byte[] data = Encoding.UTF8.GetBytes(json);
             await _webSocket.SendAsync(data, WebSocketMessageType.Text, true, cancellationToken);

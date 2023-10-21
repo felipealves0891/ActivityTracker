@@ -5,6 +5,6 @@ namespace ActivityTracker.Services.ActivityRepository
 {
     public interface IActivityRepository
     {
-        Task SaveAsync(IEnumerable<Activity> activities, CancellationToken cancellationToken);
+        Task SaveAsync(IEnumerable<ProcessEntity> activities, CancellationToken cancellationToken);
     }
 }

@@ -1,6 +1,7 @@
 using ActivityTracker.Api;
 using ActivityTracker.Api.Extensions;
-using ActivityTracker.Api.Services;
+using ActivityTracker.Api.Services.PublisherService;
+using ActivityTracker.Api.Services.RepositoryService;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ var configuration = builder.Configuration;
 builder.Services.AddControllers();
 builder.Services.AddMyHealthChecks(configuration);
 builder.Services.AddSingleton<IPublisher, Publisher>();
+builder.Services.AddSingleton<IRepository, Repository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

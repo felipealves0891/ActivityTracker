@@ -9,6 +9,6 @@ namespace ActivityTracker.Services.TrackerService
 {
     public interface ITrackerService
     {
-        IEnumerable<Activity> GetActivities();   
+        IEnumerable<ProcessEntity> GetActivities();   
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace ActivityTracker.Core.Models;
 
-public class Activity
+public class ProcessEntity
 {
-    public Activity(
+    public ProcessEntity(
         string machineName, 
         string processName, 
         string windowTitle, 

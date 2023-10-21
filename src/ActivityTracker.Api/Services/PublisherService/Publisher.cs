@@ -4,7 +4,7 @@ using ActivityTracker.Api.Services;
 using ActivityTracker.Core.Models;
 using RabbitMQ.Client;
 
-namespace ActivityTracker.Api;
+namespace ActivityTracker.Api.Services.PublisherService;
 
 public sealed class Publisher : IPublisher
 {
@@ -17,8 +17,8 @@ public sealed class Publisher : IPublisher
         var connectionString = configuration.GetConnectionString("RabbitMQ")
             ?? throw new Exception("RabbitMQ Connection String");
 
-        _queue = configuration["RabbitMQ:Activity:Queue"]
-            ?? throw new Exception("RabbitMQ Activity Queue");
+        _queue = configuration["RabbitMQ:Process:Queue"]
+            ?? throw new Exception("RabbitMQ Process Queue not found");
 
         var factory = new ConnectionFactory()
         {

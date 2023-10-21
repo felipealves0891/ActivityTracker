@@ -2,22 +2,46 @@
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
-using ActivityTracker.Api.Services;
+using ActivityTracker.Api.Services.PublisherService;
+using ActivityTracker.Api.Services.RepositoryService;
+using ActivityTracker.Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityTracker.Api.Controllers;
 
+[Route("activities")]
 public class ActivityController : ControllerBase
 {
     private readonly IPublisher _publisher;
+    private readonly IRepository _repository;
     private readonly ILogger<ActivityController> _logger;
 
     public ActivityController(
         IPublisher publisher,
+        IRepository repository,
         ILogger<ActivityController> logger) 
     {
         _publisher = publisher;
+        _repository = repository;
         _logger = logger;
+    }
+
+    [HttpGet]
+    public async Task<IEnumerable<ActivityEntity>> GetAllAsync()
+    {
+        return await _repository.GetActivitiesAsync();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActivityEntity> GetAsync(int id)
+    {
+        return await _repository.GetActivityByIdAsync(id);
+    }
+
+    [HttpGet("lastet")]
+    public async Task<ActivityEntity> GetLastetAsync()
+    {
+        return await _repository.GetActivityLastetAsync();
     }
 
     [HttpGet("/ws/activity")]
@@ -36,7 +60,6 @@ public class ActivityController : ControllerBase
         
     }
 
-
     private async Task ReceiveAsync(WebSocket socket, CancellationToken cancellationToken)
     {
         using IMemoryOwner<byte> buffer = MemoryPool<byte>.Shared.Rent(1024 * 1024);
@@ -44,7 +67,7 @@ public class ActivityController : ControllerBase
         while (socket.State == WebSocketState.Open && !cancellationToken.IsCancellationRequested)
         {
             var result = await socket.ReceiveAsync(buffer.Memory, cancellationToken);
-            _logger.LogInformation($"Recebido uma mensagem do Web Socket {result.MessageType}!");
+            _logger.LogInformation($"Recebido uma mensagem do tipo {result.MessageType}!");
             
             if (result.MessageType == WebSocketMessageType.Close)
             {
@@ -56,6 +79,8 @@ public class ActivityController : ControllerBase
             await _publisher.PublishAsync(memory, cancellationToken);
         }
     }
+
+
 
 
 }
